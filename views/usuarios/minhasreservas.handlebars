@@ -1,0 +1,24 @@
+<h1>Minhas reservas:</h1>
+<hr>
+{{#if reservas}}
+{{#each reservas}}
+{{#if isAtivo}}
+    <div class="card border-primary">
+        <div class="card-body">
+            <h4>{{ferramenta.tipo}}</h4>
+            <h5>{{ferramenta.modelo}}</h5>
+            <h6>Posição na fila de reservas: {{fila}}</h6>
+            {{#ifvalue ferramenta.unidade equals="0"}}
+            <small>Ferramenta indisponível</small>
+            {{else}}
+                <h6>Ferramenta já está disponível</h6> 
+                <a href="/usuarios/alugar/{{ferramenta._id}}"><button class="btn btn-success">Alugar</button></a>
+            {{/ifvalue}}
+        </div>
+    </div>
+{{else}}
+{{/if}}
+{{/each}}
+{{else}}
+<h4>Você não possui reservas ativas.</h4>
+{{/if}}

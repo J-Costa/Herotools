@@ -1,0 +1,34 @@
+    {{#each aluguel}}
+    {{#if devolvidoEm}}
+    {{else}}
+<div class="row justify-content-center">
+    <div class="card my-2 border-info">
+        <div class="card-body">
+            <h4>{{idFerramenta.modelo}} - {{idFerramenta.tipo}}</h4>
+            <h5>Previsão de disponibilidade em: {{dateFormat dataDevolucao}}</h5>
+            <form action="/usuarios/reservar/{{idFerramenta._id}}" method="POST">
+            <div class="btn-group">
+                <button type="submit" class="btn btn-success text-white mt-2 ">Reservar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+    {{/if}}
+    {{/each}}       
+
+        {{#each pedidos}}
+<div class="row justify-content-center">
+    <div class="card my-2 border-info">
+        <div class="card-body">
+            <h4>{{idFerramenta.modelo}} - {{idFerramenta.tipo}}</h4>
+            <h5>Previsão de disponibilidade em: {{dateFormat dataDevolucao}}</h5>
+            <form action="/usuarios/reservar/{{idFerramenta._id}}" method="POST">
+            <div class="btn-group">
+                <button type="submit" class="btn btn-success text-white mt-2 ">Reservar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+    {{/each}}       
