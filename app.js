@@ -135,6 +135,9 @@
                 .lean()
                 .limit(page_size)
                 .then((ferramenta) => {
+                if (ferramenta.length == 0){
+                    res.render('sem', {busca: search})   
+                }
                 res.render('index', {ferramenta: ferramenta, layout: 'main2'})
                 })
             } else {

@@ -14,6 +14,9 @@ const FerramentaSchema = mongoose.Schema({
        type: String,
        require: true
     },
+    preco: {
+        type: Number
+    },
     unidade: {
         type: Number,
         require: true,
