@@ -2,17 +2,21 @@
 <div class="card">
     <div class="card-body">
         <form action="/admin/ferramentas/new" method="POST">
-            <label for="ferramenta">Tipo de ferramenta:</label>
-            <input type="text" id="ferramenta" name="ferramenta" placeholder="ferramenta" class="form-control">
+            <label for='proprietario'>Proprietário:</label>
+            <input type="text" class='form-control mb-3' value='{{user.nome}}' disabled>
+            <input type="hidden" name="proprietario" value='{{user._id}}'>
 
-            <label for="tipo">Tipo:</label>
-            <input type="text" id="tipo" name="tipo" placeholder="Tipo de ferramenta" class="form-control">
+            <label for="ferramenta">Imagem da ferramenta:</label>
+            <input type="text" id="ferramenta" name="ferramenta" placeholder="Insira aqui o link da imagem de sua ferramenta..." class="form-control mb-3">
 
-            <label for="modelo">Modelo de ferramenta: </label>
-            <input type="text" id="modelo" name="modelo" placeholder="Modelo" class="form-control">
+            <label for="tipo">Descrição:</label>
+            <input type="text" id="tipo" name="tipo" placeholder="Descreva as funcionalidades de sua ferramenta..." class="form-control mb-3">
 
-            <label for="unidade"> Unidade: </label>
-            <input type="number" name="unidade" id="unidade" placeholder="unidade" class="form-control">
+            <label for="modelo">Marca da ferramenta: </label>
+            <input type="text" id="modelo" name="modelo" placeholder="Insira a marca/modelo de sua ferramenta..." class="form-control mb-3">
+
+            <label for="unidade"> Quantidade: </label>
+            <input type="number" name="unidade" id="unidade" placeholder="Insira quantidade de ferramentas que deseja disponibilizar" class="form-control ">
             <br>
             <button type="submit" class="btn btn-success">Salvar ferramenta</button>
         </form>

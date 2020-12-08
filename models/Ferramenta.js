@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Usuario = require('./Usuario');
 
 
 const FerramentaSchema = mongoose.Schema({ 
@@ -16,6 +17,11 @@ const FerramentaSchema = mongoose.Schema({
     },
     preco: {
         type: Number
+    },
+    proprietario: {
+        type: mongoose.Types.ObjectId,
+        ref: "Usuario",
+        require: true
     },
     unidade: {
         type: Number,

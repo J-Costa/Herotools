@@ -14,7 +14,8 @@ const Aluguel = mongoose.model('Aluguel')
 const Pedido = require('../models/Pedido')
 const Carrinho = require('../models/carrinho')
 const {eAdmin} = require("../helpers/eAdmin")
-
+const {isParceiro} = require('../helpers/isParceiro')
+var podeEditar = (req,res,next) => { isParceiro ? next() : eAdmin ? next() : "" }
 
 
 //TODO: inserir validações em todos os saves
@@ -150,22 +151,31 @@ router.get('/', eAdmin, (req,res)=>{
 
 //rotas ferramentas {
     //rota lista ferramentas
-        router.get('/ferramentas', eAdmin, (req,res)=>{
-            Ferramenta.find({}).lean().then((ferramenta)=>{
-                res.render("admin/ferramentas", {ferramenta: ferramenta})
-            }).catch((err) =>{
-                req.flash("error_msg", "Erro:" +err)
-                res.redirect('/admin')
-            })
+        router.get('/ferramentas', podeEditar , (req,res)=>{
+            if(res.locals.user.tipo == "admin"){
+                Ferramenta.find({}).lean().populate("proprietario").then((ferramenta)=>{
+                    res.render("admin/ferramentas", {ferramenta: ferramenta})
+                }).catch((err) =>{
+                    req.flash("error_msg", "Erro:" +err)
+                    res.redirect('/admin')
+                })
+            } else if (res.locals.user.tipo == "parceiro"){
+                Ferramenta.find({proprietario : res.locals.user._id}).lean().populate("proprietario").then((ferramenta)=>{
+                    res.render("admin/ferramentas", {ferramenta: ferramenta})
+                }).catch((err) =>{
+                    req.flash("error_msg", "Erro:" +err)
+                    res.redirect('/admin')
+                })
+            }
         })
     
     //rota adiociona ferramenta
-        router.get('/ferramentas/add', eAdmin, (req,res)=>{
+        router.get('/ferramentas/add', podeEditar, (req,res)=>{
             res.render('admin/addferramenta')
         })
     
     //rota editar ferramenta
-        router.get("/ferramentas/edit/:id", eAdmin, (req, res) => {
+        router.get("/ferramentas/edit/:id", podeEditar, (req, res) => {
             Ferramenta.findOne({_id:req.params.id}).lean().then((ferramenta) => {
             res.render("admin/editferramenta", {ferramenta: ferramenta}) 
             }).catch((err) => {
@@ -175,9 +185,10 @@ router.get('/', eAdmin, (req,res)=>{
         }) 
 
     //edita ferramenta no bando 
-        router.post("/ferramentas/edit" , eAdmin, (req,res) => {
+        router.post("/ferramentas/edit" , podeEditar, (req,res) => {
 
             Ferramenta.findOne({_id: req.body.id}).then((ferramenta) => {
+                ferramenta.proprietario = req.body.proprietario
                 ferramenta.ferramenta = req.body.ferramenta
                 ferramenta.tipo = req.body.tipo
                 ferramenta.modelo = req.body.modelo
@@ -196,7 +207,7 @@ router.get('/', eAdmin, (req,res)=>{
             })
         })
     //rota deletar ferramenta
-        router.post("/ferramentas/deletar", eAdmin, (req, res) => {
+        router.post("/ferramentas/deletar", podeEditar, (req, res) => {
             Ferramenta.deleteOne({_id: req.body.id}).then(() =>{
                 req.flash("success_msg", "Ferramenta deletada!")
                 res.redirect("/admin/ferramentas")
@@ -205,9 +216,11 @@ router.get('/', eAdmin, (req,res)=>{
                 res.redirect("/admin/ferramentas")
             })
         })
+        
     //rota salva ferramenta no banco
-        router.post('/ferramentas/new', eAdmin, (req,res) =>{
+        router.post('/ferramentas/new', podeEditar, (req,res) =>{
             const novaFerramenta = {
+                proprietario : req.body.proprietario,
                 ferramenta: req.body.ferramenta,
                 tipo: req.body.tipo,
                 modelo: req.body.modelo,
@@ -234,7 +247,6 @@ router.get('/', eAdmin, (req,res)=>{
         })
     })
     
-     
     // edita aluguel
     router.get("/aluguel/edit/:id", eAdmin, (req, res) => {
         Aluguel.findOne({_id:req.params.id}).lean().then((aluguels) => {
@@ -258,7 +270,6 @@ router.get('/', eAdmin, (req,res)=>{
                 req.flash("error_msg", "Erro 02ea: " + err)
                 res.redirect("/admin/aluguel")
             })
-         
         }).catch((err) => {
             req.flash("error_msg" , "Este aluguel não existe!")
             res.redirect("/admin/aluguel")
@@ -267,7 +278,7 @@ router.get('/', eAdmin, (req,res)=>{
     
 
     // editar aluguel no banco
-    router.post("/aluguel/edit" , eAdmin, (req,res) => {
+    router.post("/aluguel/edit", eAdmin, (req,res) => {
 
         Aluguel.findOne({_id: req.body.id}).then((aluguel) => {
             aluguel.idCliente = req.body.usuario
@@ -402,7 +413,7 @@ router.get("/pedidosdevolvidos", eAdmin,  (req,res) => {
 })
 
 //rota para devolver o pedido
-router.get("/devolverpedido/:id" ,eAdmin,(req,res) => {
+router.get("/devolverpedido/:id", eAdmin,(req,res) => {
     Pedido.findOne({_id: req.params.id}).
     then((pedido) =>{
             carrinho = new Carrinho(pedido.carrinho)
@@ -422,7 +433,7 @@ router.get("/devolverpedido/:id" ,eAdmin,(req,res) => {
 })
 
 //rota para marcar aluguel como devolvido. 
-router.get("/devolver/:id",eAdmin, (req, res) => {
+router.get("/devolver/:id", eAdmin, (req, res) => {
     Aluguel.findById(req.params.id).then((aluguel) =>{
         Aluguel.updateOne({_id: aluguel._id}, {$set:{devolvidoEm: Date()}}, () => {
             Ferramenta.updateOne({_id: aluguel.idFerramenta}, {$inc: {unidade: 1}}, ()=> {

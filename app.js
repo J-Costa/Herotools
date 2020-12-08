@@ -127,7 +127,11 @@
                 page --
                 if (page == 0) page = 1
             }
-            maxPages = Math.round(counter / page_size, 0)
+            if (counter % page_size != 0 ) {
+                maxPages = Math.ceil(counter / page_size)
+            } else {
+                maxPages = Math.round(counter / page_size, 0)
+            }
             const skip = (page - 1) * page_size
             if (search){
                 Ferramenta.find({$or: [{tipo: {$regex: new RegExp(search, "i")}},

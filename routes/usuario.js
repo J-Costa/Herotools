@@ -54,6 +54,7 @@ router.post("/registro", (req, res) => {
                 res.redirect("/usuarios/registro")
             }else{
                 const novoUsuario = new Usuario({
+                    tipo: req.body.tipo,
                     senha: req.body.senha,
                     email: req.body.email,
                     nome: req.body.nome,
