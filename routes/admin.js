@@ -239,7 +239,17 @@ router.get('/', eAdmin, (req,res)=>{
 //rotas aluguel {
     //rota lista aluguel
     router.get('/aluguel', eAdmin, (req,res)=>{
-        Aluguel.find({}).lean().populate("idCliente").populate("idFerramenta").then((aluguel)=>{
+        Aluguel.find({}).lean()
+        .populate("idCliente")
+        .populate({
+            path: "idFerramenta",
+            model: "Ferramenta",
+            populate: {
+                path: "proprietario",
+                model: "Usuario"
+            }
+        })
+        .then((aluguel)=>{
             res.render("admin/aluguel", {aluguel: aluguel})
         }).catch((err) =>{
             req.flash("error_msg", "erro:" +err)

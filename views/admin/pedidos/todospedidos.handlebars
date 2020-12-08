@@ -40,6 +40,8 @@
         {{#each itens}}
         <li class="list-group-item">{{item.modelo}}
         <span class="badge badge-dark ">X {{this.qtd}}</span>
+        {{!-- TODO: popular proprietario na rota --}}
+           <br> Proprietário: {{item.proprietario}}
         <div class="btn-group float-right"></div>
         </li>
         {{/each}}
