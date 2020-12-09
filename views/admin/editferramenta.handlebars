@@ -3,6 +3,7 @@
     <div class="card-body">
         <form action="/admin/ferramentas/edit" method="POST">
             <input type="hidden" name="id" value="{{ferramenta._id}}"> 
+            <input type="hidden" name="proprietario" value="{{ferramenta.proprietario}}"> 
             <label for="ferramenta">Tipo de ferramenta:</label>
             <input type="text" id="ferramenta" name="ferramenta" placeholder="ferramenta" class="form-control" value="{{ferramenta.ferramenta}}">
 
@@ -11,6 +12,9 @@
 
             <label for="modelo">Modelo de ferramenta: </label>
             <input type="text" id="modelo" name="modelo" placeholder="Modelo" class="form-control" value="{{ferramenta.modelo}}">
+
+            <label for="preco"> Preco: </label>
+            <input type="number" name="preco" id="preco" placeholder="preco" step='any' class="form-control" value="{{ferramenta.preco}}">
 
             <label for="unidade"> Unidade: </label>
             <input type="number" name="unidade" id="unidade" placeholder="unidade" class="form-control" value="{{ferramenta.unidade}}">

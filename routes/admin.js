@@ -193,7 +193,8 @@ router.get('/', eAdmin, (req,res)=>{
                 ferramenta.tipo = req.body.tipo
                 ferramenta.modelo = req.body.modelo
                 ferramenta.unidade = req.body.unidade
-
+                ferramenta.preco = req.body.preco
+                
                 ferramenta.save().then(() =>{
                     req.flash("success_msg", "Ferramenta editada!")
                     res.redirect("/admin/ferramentas")
@@ -223,6 +224,7 @@ router.get('/', eAdmin, (req,res)=>{
                 proprietario : req.body.proprietario,
                 ferramenta: req.body.ferramenta,
                 tipo: req.body.tipo,
+                preco: req.body.preco,
                 modelo: req.body.modelo,
                 unidade: req.body.unidade
 
@@ -360,10 +362,14 @@ router.get('/', eAdmin, (req,res)=>{
 
 //rota para listar todos os pedidos
 router.get("/todospedidos", eAdmin, (req,res) => {
-    Pedido.find().
-    lean().
-    populate("usuario").
-    then((pedidos) => {
+    Pedido.find()
+    .lean()
+    .populate("usuario")
+    .populate({
+        path: "proprietario",
+        model: "Usuario",
+    })
+    .then((pedidos) => {
         var carrinho
         pedidos.forEach((pedido) => {
             carrinho = new Carrinho(pedido.carrinho)

@@ -15,8 +15,14 @@
             <label for="ferramenta" > Ferramenta</label>
             <select name="ferramenta" class='custom-select' >
                     <option value="{{ferramenta._id}}" >{{ferramenta.modelo}}</option>
-            </select> 
-            
+            </select>
+            <br> 
+            <label for="preco" class="mt-5">Valor da diária: R${{ferramenta.preco}} </label>
+            <input type="hidden" name="valor" id='valor' value="{{ferramenta.preco}}">
+            <br>
+            <label for="periodo" id="periodo">Período de aluguel: 0 dias.  </label>
+            <br>
+            <label for="total" id="valTotal">Valor total:  </label>
                 <div class="row mt-4">
                     <div class="col-sm">
                         <label for="date">Data de retirada:</label>
@@ -27,13 +33,38 @@
                     <div class="col-sm">
                         <label for="date">Data de devolução:</label>
                         <br>
-                        <input type="date" id="datadevolucao" name="dataDevolucao" min="{{dateFormat2 dataAtual}}" required>
+                        <input type="date" id="datadevolucao" name="dataDevolucao" min="{{dateFormat2 dataAtual}}" onchange="calcDiaria()" required>
                     </div>
                 </div>
        
         
             <br>
+            
             <button type="submit" class="btn btn-success">Salvar aluguel</button>
         </form>
     </div>
 </div>
+
+<script>
+   var calcDiaria = () => {
+       var retirada = new Date(document.querySelector("#dataretirada").value.split("-"))
+       var devolucao = new Date(document.querySelector("#datadevolucao").value.split("-"))
+       const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+        // a and b are javascript Date objects
+        function dateDiffInDays(a, b) {
+            // Discard the time and time-zone information.
+            const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+            const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+            return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+        }
+        
+        document.querySelector("#periodo").innerHTML = `Período de aluguel: ${(dateDiffInDays(retirada,devolucao))} dias.`
+        var valor = parseFloat(document.querySelector("#valor").value)
+        document.querySelector("#valTotal").innerHTML = 
+        `Valor total: R$${((dateDiffInDays(retirada,devolucao))*valor).toFixed(2)} `
+        document.querySelector("#valorTotal").value = 
+        `${((dateDiffInDays(retirada,devolucao))*valor).toFixed(2)}`
+    }
+</script>
